@@ -38,9 +38,10 @@ public class Server {
 
 			while (connection.isConnected()) {
 				
-				
+				UserInterface.connecting = false;
+				UserInterface.isConnected = true;
+				System.out.println("Server Connected, Connecting = " + UserInterface.connecting + ", isConnected = " + UserInterface.isConnected);
 				try {
-					UserInterface.isConnected = true;
 					UserInterface.createMessage((String)is.readObject(), true);
 					System.out.println("(Server)Message Recieved as: " + is.readObject());
 				}catch(EOFException e) {
@@ -52,6 +53,8 @@ public class Server {
 			}
 
 		} catch (Exception e) {
+			UserInterface.infoText.setText("\n \nConnection Failed! \n \n Make sure you have a connection and a useable Port Number!");
+			
 			e.printStackTrace();
 		}
 	}
@@ -69,14 +72,14 @@ public class Server {
 	}
 
 	public void sendMessage(String message) {
-		System.out.println("(Server)Message sent as: " + message);
 		try {
 			if (os != null) {
 				os.writeObject(message);
 				os.flush();
+				System.out.println("(Server)Message sent as: " + message);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			
 		}
 	}
 }

@@ -25,22 +25,26 @@ public class Client {
 		System.out.println("Client Started");
 	
 		try {
-
+			
 			connection = new Socket(ip, port);
 
 			os = new ObjectOutputStream(connection.getOutputStream());
 			is = new ObjectInputStream(connection.getInputStream());
 
 			os.flush();
-
+			UserInterface.connecting = false;
 			
 		} catch (Exception e) {
+			UserInterface.infoText.setText("\n \n Connection Failed! \n \nMake sure your IPAddress and Port Number are Valid!");
 			e.printStackTrace();
 		}
 		
 		while (connection.isConnected()) {
+			System.out.println("Client Connected");	
+			UserInterface.connecting = false;
+			UserInterface.isConnected = true;
+			System.out.println("Client Connected, Connecting = " + UserInterface.connecting + ", isConnected = " + UserInterface.isConnected);
 			try {
-				UserInterface.isConnected = true;
 				UserInterface.createMessage((String)is.readObject(), true);
 				System.out.println("(Client)Message recieved as: " + is.readObject());
 			} catch (Exception e) {
@@ -52,11 +56,12 @@ public class Client {
 	}
 	
 	public void sendMessage(String message) {
-		System.out.println("(Client)Message sent as: " + message);
+		
 		try {
 			if (os != null) {
 				os.writeObject(message);
 				os.flush();
+				System.out.println("(Client)Message sent as: " + message);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
